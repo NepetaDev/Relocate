@@ -169,6 +169,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
         return;
     }
 
+    NSString *processName = [NSProcessInfo processInfo].processName;
     if (!shouldLoad) {
         NSArray *whitelist = @[
             @"findmydeviced",
@@ -179,7 +180,6 @@ CLLocation *getOverridenLocation(CLLocation *location) {
             @"SpringBoard",
         ];
 
-        NSString *processName = [NSProcessInfo processInfo].processName;
         for (NSString *process in whitelist) {
             if ([process isEqualToString:processName]) {
                 shouldLoad = YES;
@@ -199,6 +199,11 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     locationDict = @{};
 
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    if ([processName isEqualToString:@"findmydeviced"]) {
+        bundleIdentifier = @"com.apple.mobileme.fmip1";
+    } else if ([processName isEqualToString:@"fmfd"] || [processName isEqualToString:@"fmflocatord"]) {
+        bundleIdentifier = @"com.apple.mobileme.fmf1";
+    }
 
     [preferences registerPreferenceChangeBlock:^() {
 
