@@ -7,7 +7,7 @@ HBPreferences *preferences;
 
 bool globalEnabled;
 bool appEnabled;
-bool currentAppEnabled;
+int currentAppEnabled;
 
 bool enabled;
 CLLocationCoordinate2D coordinate;
@@ -112,7 +112,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     [preferences registerBool:&appEnabled default:NO forKey:@"AppEnabled"];
 
     enabled = NO;
-    currentAppEnabled = NO;
+    currentAppEnabled = 0;
     coordinate = CLLocationCoordinate2DMake(0,0);
     locationDict = @{};
 
@@ -121,7 +121,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     [preferences registerPreferenceChangeBlock:^() {
 
         if ([preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]]) {
-            currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] boolValue];
+            currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] intValue];
         }
 
         enabled = NO;
@@ -130,7 +130,12 @@ CLLocation *getOverridenLocation(CLLocation *location) {
             locationDict = [preferences objectForKey:@"GlobalLocation"];
         }
 
-        if (appEnabled && currentAppEnabled) {
+        if (appEnabled && currentAppEnabled > 0) {
+            if (currentAppEnabled == 2) {
+                enabled = NO;
+                return;
+            }
+            
             enabled = YES;
             locationDict = [preferences objectForKey:[NSString stringWithFormat:@"App_%@_Location", bundleIdentifier]];
         }

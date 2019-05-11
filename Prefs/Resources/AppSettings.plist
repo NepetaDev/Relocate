@@ -8,21 +8,31 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>GLOBAL</string>
+			<string>APP</string>
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
+			<string>PSSegmentCell</string>
 			<key>default</key>
-			<false/>
+			<integer>0</integer>
 			<key>defaults</key>
 			<string>me.nepeta.relocate</string>
-			<key>label</key>
-			<string>ENABLED</string>
 			<key>key</key>
 			<string>Enabled</string>
-			<key>alternateColors</key>
-			<true/>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>DEFAULT</string>
+				<string>OVERRIDE</string>
+				<string>USE_REAL</string>
+			</array>
+			<key>alignment</key>
+			<string>3</string>
 			<key>PostNotification</key>
 			<string>me.nepeta.relocate/ReloadPrefs</string>
 		</dict>

@@ -37,7 +37,7 @@
 
     NSString *displayIdentifier = [_dataSource displayIdentifierForIndexPath:indexPath];
     if ([_preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", displayIdentifier]]) {
-        if ([[_preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", displayIdentifier]] boolValue]) {
+        if ([[_preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", displayIdentifier]] intValue] > 0) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
     }

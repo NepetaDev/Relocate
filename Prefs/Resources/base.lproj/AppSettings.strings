@@ -1,4 +1,8 @@
 {
   "ENABLED" = "Enabled";
+  "APP" = "Application";
   "LOCATION" = "Location";
+  "DEFAULT" = "Default";
+  "OVERRIDE" = "Custom override";
+  "USE_REAL" = "Use real location";
 }
