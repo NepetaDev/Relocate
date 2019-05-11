@@ -3,11 +3,14 @@
 #import "Tweak.h"
 #import "RLCLocationManagerDelegate.h"
 
+#define PLIST_PATH @"/var/lib/dpkg/info/me.nepeta.relocate.list"
+
 HBPreferences *preferences;
 
 bool globalEnabled;
 bool appEnabled;
 int currentAppEnabled;
+bool dpkgInvalid;
 
 bool enabled;
 CLLocationCoordinate2D coordinate;
@@ -83,6 +86,8 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 
 @end
 
+%group Relocate
+
 %hook CLLocationManager
 
 %property (nonatomic, retain) RLCLocationManagerDelegate* rlcDelegate;
@@ -106,7 +111,88 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 
 %end
 
+%end
+
+%group RelocateIntegrityFail
+
+%hook SpringBoard
+
+-(void)applicationDidFinishLaunching:(id)arg1 {
+    %orig;
+    if (!dpkgInvalid) return;
+    UIAlertController *alertController = [UIAlertController
+        alertControllerWithTitle:@"😡😡😡"
+        message:@"The build of Relocate you're using comes from an untrusted source. Pirate repositories can distribute malware and you will get subpar user experience using any tweaks from them.\nRemember: Relocate is free. Uninstall this build and install the proper version of Relocate from:\nhttps://repo.nepeta.me/\n(it's free, damnit, why would you pirate that!?)"
+        preferredStyle:UIAlertControllerStyleAlert
+    ];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Damn!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [((UIApplication*)self).keyWindow.rootViewController dismissViewControllerAnimated:YES completion:NULL];
+    }]];
+
+    [((UIApplication*)self).keyWindow.rootViewController presentViewController:alertController animated:YES completion:NULL];
+}
+
+%end
+
+%end
+
 %ctor {
+    NSArray *blacklist = @[
+        @"backboardd",
+        @"duetexpertd",
+        @"lsd",
+        @"nsurlsessiond",
+        @"assertiond",
+        @"ScreenshotServicesService",
+        @"com.apple.datamigrator",
+        @"CircleJoinRequested",
+        @"nanotimekitcompaniond",
+        @"ReportCrash",
+        @"ptpd"
+    ];
+
+    NSString *processName = [NSProcessInfo processInfo].processName;
+    for (NSString *process in blacklist) {
+        if ([process isEqualToString:processName]) {
+            return;
+        }
+    }
+
+    BOOL isSpringboard = [@"SpringBoard" isEqualToString:processName];
+    BOOL isLocationd = [@"locationd" isEqualToString:processName];
+
+    dpkgInvalid = ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
+
+    // Someone smarter than me invented this.
+    // https://www.reddit.com/r/jailbreak/comments/4yz5v5/questionremote_messages_not_enabling/d6rlh88/
+    bool shouldLoad = NO;
+
+    NSArray *args = [[NSClassFromString(@"NSProcessInfo") processInfo] arguments];
+    NSUInteger count = args.count;
+    if (count != 0) {
+        NSString *executablePath = args[0];
+        if (executablePath) {
+            NSString *processName = [executablePath lastPathComponent];
+            BOOL isApplication = [executablePath rangeOfString:@"/Application/"].location != NSNotFound || [executablePath rangeOfString:@"/Applications/"].location != NSNotFound;
+            BOOL isFileProvider = [[processName lowercaseString] rangeOfString:@"fileprovider"].location != NSNotFound;
+            BOOL skip = [processName isEqualToString:@"AdSheet"]
+                        || [processName isEqualToString:@"CoreAuthUI"]
+                        || [processName isEqualToString:@"InCallService"]
+                        || [processName isEqualToString:@"MessagesNotificationViewService"]
+                        || [executablePath rangeOfString:@".appex/"].location != NSNotFound
+                        || ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
+            if (!isFileProvider && (isApplication || isLocationd || isSpringboard) && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
+                shouldLoad = !dpkgInvalid;
+            }
+        }
+    }
+
+    if (dpkgInvalid) {
+        if (isSpringboard) %init(RelocateIntegrityFail);
+        return;
+    }
+
     preferences = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.relocate"];
     [preferences registerBool:&globalEnabled default:NO forKey:@"GlobalEnabled"];
     [preferences registerBool:&appEnabled default:YES forKey:@"AppEnabled"];
@@ -148,5 +234,5 @@ CLLocation *getOverridenLocation(CLLocation *location) {
         }
     }];
 
-    %init;
+    %init(Relocate);
 }
