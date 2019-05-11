@@ -2,6 +2,7 @@
 #import <CoreLocation/CLLocation.h>
 #import "Tweak.h"
 #import "RLCLocationManagerDelegate.h"
+#import "RLCAnalogStickWindow.h"
 
 #define PLIST_PATH @"/var/lib/dpkg/info/me.nepeta.relocate.list"
 
@@ -13,8 +14,10 @@ int currentAppEnabled;
 bool dpkgInvalid;
 
 bool enabled;
+bool joystick;
 CLLocationCoordinate2D coordinate;
 NSDictionary *locationDict;
+RLCAnalogStickWindow *analogStickWindow;
 
 CLLocation *getOverridenLocation(CLLocation *location) {
     double altitude = location.altitude;
@@ -87,6 +90,36 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 @end
 
 %group Relocate
+
+%hook UIWindow
+
+-(void)layoutSubviews {
+    %orig;
+    if (!joystick) {
+        if (analogStickWindow) analogStickWindow.hidden = YES;
+        return;
+    }
+
+    if ([[[UIApplication sharedApplication] windows] firstObject] != self) return;
+
+    if (!analogStickWindow) {
+        analogStickWindow = [[RLCAnalogStickWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(rlcUpdatePosition) userInfo:nil repeats:YES];
+        analogStickWindow.circleFrame = CGRectMake(analogStickWindow.bounds.size.width - 170, analogStickWindow.bounds.size.height - 170, 150, 150);
+    }
+
+    analogStickWindow.hidden = NO;
+}
+
+%new
+-(void)rlcUpdatePosition {
+    if (analogStickWindow.inputY != 0 && analogStickWindow.inputX != 0) {
+        coordinate.latitude += analogStickWindow.inputY * 0.00001;
+        coordinate.longitude += analogStickWindow.inputX * 0.00001;
+    }
+}
+
+%end
 
 %hook CLLocationManager
 
@@ -194,6 +227,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     [preferences registerBool:&appEnabled default:YES forKey:@"AppEnabled"];
 
     enabled = NO;
+    joystick = NO;
     currentAppEnabled = 0;
     coordinate = CLLocationCoordinate2DMake(0,0);
     locationDict = @{};
@@ -206,7 +240,6 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     }
 
     [preferences registerPreferenceChangeBlock:^() {
-
         if ([preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]]) {
             currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] intValue];
         }
@@ -221,6 +254,10 @@ CLLocation *getOverridenLocation(CLLocation *location) {
             if (currentAppEnabled == 2) {
                 enabled = NO;
                 return;
+            }
+
+            if ([preferences objectForKey:[NSString stringWithFormat:@"App_%@_Joystick", bundleIdentifier]]) {
+                joystick = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Joystick", bundleIdentifier]] boolValue];
             }
 
             enabled = YES;
