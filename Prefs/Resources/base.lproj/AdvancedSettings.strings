@@ -1,0 +1,5 @@
+{
+  "ENABLED" = "Enabled";
+  "ALTITUDE" = "Altitude (m)";
+  "ALTITUDE_OVERRIDE" = "Override altitude";
+}

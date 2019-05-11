@@ -1,0 +1,10 @@
+{
+    entry = {
+	bundle = RelocatePrefs;
+	cell = PSLinkCell;
+	detail = RLCPrefsListController;
+	isController = 1;
+	label = Relocate;
+	icon = icon.png;
+    };
+}

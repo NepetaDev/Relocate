@@ -1,0 +1,9 @@
+Package: me.nepeta.relocate
+Name: Relocate
+Depends: mobilesubstrate, ws.hbang.common (>= 1.11), firmware (>= 11.0), applist
+Version: 0.1.0
+Architecture: iphoneos-arm
+Description: Minimalist GPS spoofer (free)
+Maintainer: Nepeta
+Author: Nepeta
+Section: Tweaks

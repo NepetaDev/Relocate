@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>ALTITUDE</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>label</key>
+			<string>ALTITUDE_OVERRIDE</string>
+			<key>key</key>
+			<string>AltitudeOverride</string>
+			<key>alternateColors</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<real>0</real>
+			<key>label</key>
+			<string>ALTITUDE</string>
+			<key>key</key>
+			<string>Altitude</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>isDecimalPad</key>
+			<true/>
+		</dict>
+	</array>
+</dict>
+</plist>

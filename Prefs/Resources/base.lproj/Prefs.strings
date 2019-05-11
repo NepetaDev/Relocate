@@ -1,0 +1,15 @@
+{
+  "ENABLED" = "Enabled";
+
+  "GLOBAL" = "Global override";
+  "APP" = "Application override";
+  "LOCATION" = "Location";
+
+  "ARE_YOU_SURE_TO_RESET_PREFS" = "Are you sure you want to reset all your preferences? This cannot be undone.";
+  "OK" = "OK";
+  "CANCEL" = "Cancel";
+  "RESET_PREFS" = "Restore default settings and respring";
+  "SOURCE_CODE" = "Source code";
+  "DONATE_TO_NEPETA" = "Donate to Nepeta";
+  "SUPPORT_ME" = "Support me!";
+}

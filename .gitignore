@@ -1,0 +1,6 @@
+.theos
+obj
+.DS_Store
+/*.xcodeproj
+/packages
+/TODO
