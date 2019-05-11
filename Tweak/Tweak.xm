@@ -109,7 +109,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 %ctor {
     preferences = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.relocate"];
     [preferences registerBool:&globalEnabled default:NO forKey:@"GlobalEnabled"];
-    [preferences registerBool:&appEnabled default:NO forKey:@"AppEnabled"];
+    [preferences registerBool:&appEnabled default:YES forKey:@"AppEnabled"];
 
     enabled = NO;
     currentAppEnabled = 0;
@@ -135,7 +135,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
                 enabled = NO;
                 return;
             }
-            
+
             enabled = YES;
             locationDict = [preferences objectForKey:[NSString stringWithFormat:@"App_%@_Location", bundleIdentifier]];
         }

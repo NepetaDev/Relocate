@@ -71,7 +71,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<false/>
+			<true/>
 			<key>defaults</key>
 			<string>me.nepeta.relocate</string>
 			<key>label</key>
