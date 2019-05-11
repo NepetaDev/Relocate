@@ -79,6 +79,8 @@
 }
 
 - (void)save:(id)sender {
+    [[UIApplication sharedApplication].keyWindow endEditing:YES];
+
     if (self.lpView.pin) {
         self.dictionary[@"Coordinate"] = @{
             @"Latitude": @(self.lpView.pin.coordinate.latitude),
@@ -86,6 +88,7 @@
         };
         [self setPreferenceValue:self.dictionary specifier:[self specifier]];
     }
+    
     [self.navigationController popViewControllerAnimated:TRUE];
 }
 
