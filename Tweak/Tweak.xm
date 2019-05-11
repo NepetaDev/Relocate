@@ -138,29 +138,6 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 %end
 
 %ctor {
-    NSArray *blacklist = @[
-        @"backboardd",
-        @"duetexpertd",
-        @"lsd",
-        @"nsurlsessiond",
-        @"assertiond",
-        @"ScreenshotServicesService",
-        @"com.apple.datamigrator",
-        @"CircleJoinRequested",
-        @"nanotimekitcompaniond",
-        @"ReportCrash",
-        @"ptpd"
-    ];
-
-    NSString *processName = [NSProcessInfo processInfo].processName;
-    for (NSString *process in blacklist) {
-        if ([process isEqualToString:processName]) {
-            return;
-        }
-    }
-
-    BOOL isSpringboard = [@"SpringBoard" isEqualToString:processName];
-
     dpkgInvalid = ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
 
     // Someone smarter than me invented this.
@@ -181,14 +158,14 @@ CLLocation *getOverridenLocation(CLLocation *location) {
                         || [processName isEqualToString:@"MessagesNotificationViewService"]
                         || [executablePath rangeOfString:@".appex/"].location != NSNotFound
                         || ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
-            if (!isFileProvider && (isApplication || isSpringboard) && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
+            if (!isFileProvider && isApplication && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
                 shouldLoad = !dpkgInvalid;
             }
         }
     }
 
     if (dpkgInvalid) {
-        if (isSpringboard) %init(RelocateIntegrityFail);
+        %init(RelocateIntegrityFail);
         return;
     }
 
