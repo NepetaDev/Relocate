@@ -169,6 +169,26 @@ CLLocation *getOverridenLocation(CLLocation *location) {
         return;
     }
 
+    if (!shouldLoad) {
+        NSArray *whitelist = @[
+            @"findmydeviced",
+            @"fmfd",
+            @"fmflocatord",
+            @"locationd",
+            @"siriknowledged",
+            @"SpringBoard",
+        ];
+
+        NSString *processName = [NSProcessInfo processInfo].processName;
+        for (NSString *process in whitelist) {
+            if ([process isEqualToString:processName]) {
+                shouldLoad = YES;
+            }
+        }
+
+        if (!shouldLoad) return;
+    }
+
     preferences = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.relocate"];
     [preferences registerBool:&globalEnabled default:NO forKey:@"GlobalEnabled"];
     [preferences registerBool:&appEnabled default:YES forKey:@"AppEnabled"];
