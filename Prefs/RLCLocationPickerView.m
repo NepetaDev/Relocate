@@ -18,11 +18,16 @@
     self.longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(movePin:)];
     [self.mapView addGestureRecognizer:self.longPressRecognizer];
 
+    self.helpView = [[RLCHelpView alloc] initWithFrame:frame];
+    self.helpView.text = @"Long press on the map to select a location,\n\"Save\" to confirm your choice.";
+
     [self addSubview:self.mapView];
+    [self addSubview:self.helpView];
     [self addSubview:self.overlayView];
     [self addSubview:self.advancedSettingsView];
 
     self.mapView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.helpView.translatesAutoresizingMaskIntoConstraints = NO;
     self.overlayView.translatesAutoresizingMaskIntoConstraints = NO;
     self.advancedSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -40,6 +45,13 @@
         [self.mapView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
     ]];
 
+    [NSLayoutConstraint activateConstraints:@[
+        [self.helpView.topAnchor constraintEqualToAnchor:self.safeAreaLayoutGuide.topAnchor constant:10],
+        [self.helpView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:10],
+        [self.helpView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-10],
+        [self.helpView.heightAnchor constraintEqualToConstant:60],
+    ]];
+
     CGFloat bottomInset = 0;
     if (@available(iOS 11.0, *)) {
         bottomInset = self.safeAreaInsets.bottom;
@@ -55,6 +67,22 @@
     ]];
 
     return self;
+}
+
+-(void)showHelpView {
+    [UIView animateWithDuration:0.3
+            delay:0.0
+            options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.helpView.alpha = 1.0;
+    } completion:NULL];
+}
+
+-(void)hideHelpView {
+    [UIView animateWithDuration:0.3
+            delay:0.0
+            options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.helpView.alpha = 0.0;
+    } completion:NULL];
 }
 
 -(void)layoutSubviews {
@@ -116,6 +144,8 @@
 
 -(void)movePin:(UIGestureRecognizer *)recognizer {
     [self hideCallouts];
+    [self hideHelpView];
+
     CGPoint point = [recognizer locationInView:self.mapView];
     CLLocationCoordinate2D coord = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
     if (!self.pin) [self createPinAt:coord];

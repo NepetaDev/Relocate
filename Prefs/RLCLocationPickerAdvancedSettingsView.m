@@ -152,6 +152,7 @@
     self.chevronButton.transform = CGAffineTransformMakeRotation(0);
     parent.advancedSettingsViewHeightConstraintHidden.active = NO;
     parent.advancedSettingsViewHeightConstraintVisible.active = YES;
+    [parent hideHelpView];
     
     [UIView animateWithDuration:0.4
             delay:0.0
