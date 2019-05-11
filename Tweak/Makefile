@@ -7,6 +7,7 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = Relocate
 $(TWEAK_NAME)_FILES = Tweak.xm
 ADDITIONAL_OBJCFLAGS = -fobjc-arc
+$(TWEAK_NAME)_FRAMEWORKS = CoreLocation
 $(TWEAK_NAME)_EXTRA_FRAMEWORKS = Cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk
