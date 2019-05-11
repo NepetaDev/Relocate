@@ -160,7 +160,6 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     }
 
     BOOL isSpringboard = [@"SpringBoard" isEqualToString:processName];
-    BOOL isLocationd = [@"locationd" isEqualToString:processName];
 
     dpkgInvalid = ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
 
@@ -182,7 +181,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
                         || [processName isEqualToString:@"MessagesNotificationViewService"]
                         || [executablePath rangeOfString:@".appex/"].location != NSNotFound
                         || ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
-            if (!isFileProvider && (isApplication || isLocationd || isSpringboard) && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
+            if (!isFileProvider && (isApplication || isSpringboard) && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
                 shouldLoad = !dpkgInvalid;
             }
         }
