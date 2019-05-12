@@ -34,6 +34,23 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     ];
 }
 
+@interface NSNull (Relocate)
+-(int)intValue;
+-(BOOL)boolValue;
+@end
+
+@implementation NSNull (Relocate)
+
+-(int)intValue {
+    return 0;
+}
+
+-(BOOL)boolValue {
+    return false;
+}
+
+@end
+
 @implementation RLCLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
@@ -240,9 +257,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     }
 
     [preferences registerPreferenceChangeBlock:^() {
-        if ([preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]]) {
-            currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] intValue];
-        }
+        currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] intValue];
 
         enabled = NO;
         if (globalEnabled) {
@@ -256,12 +271,12 @@ CLLocation *getOverridenLocation(CLLocation *location) {
                 return;
             }
 
-            if ([preferences objectForKey:[NSString stringWithFormat:@"App_%@_Joystick", bundleIdentifier]]) {
-                joystick = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Joystick", bundleIdentifier]] boolValue];
-            }
-
             enabled = YES;
             locationDict = [preferences objectForKey:[NSString stringWithFormat:@"App_%@_Location", bundleIdentifier]];
+        }
+
+        if (appEnabled && currentAppEnabled != 2) {
+            joystick = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Joystick", bundleIdentifier]] boolValue];
         }
 
         if (!enabled) return;
