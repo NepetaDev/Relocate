@@ -152,6 +152,10 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     %orig(self.rlcDelegate);
 }
 
+-(id)delegate {
+    return self.rlcDelegate.delegate;
+}
+
 -(CLLocation *)location {
     if (!enabled) return %orig;
     
