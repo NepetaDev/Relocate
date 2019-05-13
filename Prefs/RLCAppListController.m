@@ -35,6 +35,9 @@ static UIImage *defaultImage;
 
         if ([self respondsToSelector:@selector(setView:)])
             [self performSelectorOnMainThread:@selector(setView:) withObject:_tableView waitUntilDone:YES];
+
+        [self setTitle:@"Applications"];
+        [self.navigationItem setTitle:@"Applications"];
     }
 
     return self;
