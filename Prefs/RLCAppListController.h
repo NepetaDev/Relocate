@@ -6,11 +6,17 @@
 #import <Cephei/HBPreferences.h>
 #import <AppList/AppList.h>
 
-@interface RLCAppListController : PSViewController <UITableViewDelegate> {
+@interface RLCAppListController : PSViewController <UITableViewDelegate, UITableViewDataSource> {
     UITableView *_tableView;
-    ALApplicationTableDataSource *_dataSource;
     HBPreferences *_preferences;
+    NSDictionary *_appList;
+    NSArray *_allSections;
+    NSMutableArray *_sections;
+    NSMutableArray *_apps;
+    int _lastSectionCount;
 }
 
+-(void)loadIcons;
+-(void)reloadApps;
 
 @end

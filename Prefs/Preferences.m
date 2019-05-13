@@ -17,7 +17,7 @@
 
 - (id)specifiers {
     if(_specifiers == nil) {
-        _specifiers = [[self loadSpecifiersFromPlistName:@"Prefs" target:self] retain];
+        _specifiers = [self loadSpecifiersFromPlistName:@"Prefs" target:self];
     }
     return _specifiers;
 }
@@ -40,7 +40,7 @@
 }
 
 - (void)respring:(id)sender {
-    NSTask *t = [[[NSTask alloc] init] autorelease];
+    NSTask *t = [[NSTask alloc] init];
     [t setLaunchPath:@"/usr/bin/killall"];
     [t setArguments:[NSArray arrayWithObjects:@"backboardd", nil]];
     [t launch];

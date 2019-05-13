@@ -10,6 +10,7 @@ $(BUNDLE_NAME)_FRAMEWORKS = UIKit MapKit QuartzCore
 $(BUNDLE_NAME)_LIBRARIES = applist
 $(BUNDLE_NAME)_PRIVATE_FRAMEWORKS = Preferences
 $(BUNDLE_NAME)_EXTRA_FRAMEWORKS = Cephei CepheiPrefs
+ADDITIONAL_OBJCFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

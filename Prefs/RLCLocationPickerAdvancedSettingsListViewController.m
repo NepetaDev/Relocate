@@ -5,7 +5,7 @@
 
 - (id)specifiers {
     if(_specifiers == nil) {
-        _specifiers = [[self loadSpecifiersFromPlistName:@"AdvancedSettings" target:self] retain];
+        _specifiers = [self loadSpecifiersFromPlistName:@"AdvancedSettings" target:self];
     }
     return _specifiers;
 }

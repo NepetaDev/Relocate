@@ -10,7 +10,7 @@
     NSString *title = [specifier name];
     NSString *bundle = [specifier propertyForKey:@"key"];
 
-    _specifiers = [[self loadSpecifiersFromPlistName:@"AppSettings" target:self] retain];
+    _specifiers = [self loadSpecifiersFromPlistName:@"AppSettings" target:self];
 
     for (PSSpecifier *specifier in _specifiers) {
         NSString *key = [specifier propertyForKey:@"key"];
