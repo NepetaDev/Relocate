@@ -9,9 +9,11 @@
 HBPreferences *preferences;
 
 bool globalEnabled;
+bool globalNoGPS;
 bool appEnabled;
 int currentAppEnabled;
 bool dpkgInvalid;
+bool noGPSMode;
 
 bool enabled;
 bool joystick;
@@ -34,6 +36,23 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     ];
 }
 
+CLLocation *getFabricatedLocation() {
+    double altitude = 420;
+    if (locationDict[@"AltitudeOverride"] && [locationDict[@"AltitudeOverride"] boolValue] && locationDict[@"Altitude"]) {
+        altitude = [locationDict[@"Altitude"] doubleValue];
+    }
+
+    return [[CLLocation alloc]
+                initWithCoordinate:coordinate
+                altitude:altitude
+                horizontalAccuracy:10
+                verticalAccuracy:10
+                course:1
+                speed:0
+                timestamp:[NSDate date]
+            ];
+}
+
 @interface NSNull (Relocate)
 -(int)intValue;
 -(BOOL)boolValue;
@@ -47,6 +66,55 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 
 -(BOOL)boolValue {
     return false;
+}
+
+@end
+
+@implementation RLCManager
+
++(instancetype)sharedInstance {
+    static RLCManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [RLCManager alloc];
+    });
+    return sharedInstance;
+}
+
+-(id)init {
+    return [RLCManager sharedInstance];
+}
+
+-(void)update {
+    if (!enabled || !noGPSMode) return;
+    if (!_managers || [_managers count] == 0) return;
+
+    for (id manager in _managers) {
+        [self updateManager:manager];
+    }
+}
+
+-(void)updateManager:(CLLocationManager*)manager {
+    if ([[manager delegate] respondsToSelector:@selector(locationManager:didUpdateLocations:)]) {
+        [[manager delegate] locationManager:manager didUpdateLocations:@[
+            getFabricatedLocation()
+        ]];
+    }
+}
+
+-(void)addManager:(CLLocationManager*)manager {
+    if (!manager) return;
+    if (!_managers) _managers = [NSMutableArray new];
+    [_managers addObject:manager];
+
+    if (!_timer) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(update) userInfo:nil repeats:YES];
+    }
+}
+
+-(void)removeManager:(CLLocationManager*)manager {
+    if (!_managers || !manager) return;
+    [_managers removeObject:manager];
 }
 
 @end
@@ -96,12 +164,15 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 }
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager {
-    if ([self.delegate respondsToSelector:@selector(locationManagerShouldDisplayHeadingCalibration:)])return [self.delegate locationManagerShouldDisplayHeadingCalibration:manager];
+    if ([self.delegate respondsToSelector:@selector(locationManagerShouldDisplayHeadingCalibration:)]) return [self.delegate locationManagerShouldDisplayHeadingCalibration:manager];
     return NO;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    if ([self.delegate respondsToSelector:@selector(locationManager:didChangeAuthorizationStatus:)]) [self.delegate locationManager:manager didChangeAuthorizationStatus:status];
+    if ([self.delegate respondsToSelector:@selector(locationManager:didChangeAuthorizationStatus:)]) {
+        if (enabled && noGPSMode) [self.delegate locationManager:manager didChangeAuthorizationStatus:kCLAuthorizationStatusAuthorizedAlways];
+        else [self.delegate locationManager:manager didChangeAuthorizationStatus:status];
+    }
 }
 
 @end
@@ -121,7 +192,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 
     if (!analogStickWindow) {
         analogStickWindow = [[RLCAnalogStickWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(rlcUpdatePosition) userInfo:nil repeats:YES];
+        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(rlcUpdatePosition) userInfo:nil repeats:YES];
         analogStickWindow.circleFrame = CGRectMake(analogStickWindow.bounds.size.width - 170, analogStickWindow.bounds.size.height - 170, 150, 150);
     }
 
@@ -158,9 +229,68 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 
 -(CLLocation *)location {
     if (!enabled) return %orig;
-    
+    if (noGPSMode) return getFabricatedLocation();
+
     CLLocation *location = %orig;
     return getOverridenLocation(location);
+}
+
+-(void)requestWhenInUseAuthorization {
+    if (enabled && noGPSMode) return;
+    %orig;
+}
+
+-(void)requestAlwaysAuthorization {
+    if (enabled && noGPSMode) return;
+    %orig;
+}
+
+- (void)requestWhenInUseAuthorizationWithPrompt {
+    if (enabled && noGPSMode) return;
+    %orig;
+}
+
+-(void)requestLocation {
+    if (enabled && noGPSMode) {
+        [[RLCManager sharedInstance] updateManager:self];
+        return;
+    }
+    %orig;
+}
+
+-(void)startUpdatingLocation {
+    [[RLCManager sharedInstance] addManager:self];
+    %orig;
+}
+
+- (void)startUpdatingLocationWithPrompt {
+    [[RLCManager sharedInstance] addManager:self];
+    %orig;
+}
+
+-(void)stopUpdatingLocation {
+    [[RLCManager sharedInstance] removeManager:self];
+    %orig;
+}
+
++(CLAuthorizationStatus)authorizationStatus {
+    if (enabled && noGPSMode) return kCLAuthorizationStatusAuthorizedAlways;
+    return %orig;
+}
+
++(BOOL)locationServicesEnabled {
+    if (enabled && noGPSMode) return YES;
+    return %orig;
+}
+
++(BOOL)headingAvailable {
+    if (enabled && noGPSMode) return NO;
+    return %orig;
+}
+
+-(void)startUpdatingHeading {
+    if (enabled && noGPSMode) return;
+    %orig;
 }
 
 %end
@@ -245,10 +375,12 @@ CLLocation *getOverridenLocation(CLLocation *location) {
 
     preferences = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.relocate"];
     [preferences registerBool:&globalEnabled default:NO forKey:@"GlobalEnabled"];
+    [preferences registerBool:&globalNoGPS default:NO forKey:@"GlobalNoGPS"];
     [preferences registerBool:&appEnabled default:YES forKey:@"AppEnabled"];
 
     enabled = NO;
     joystick = NO;
+    noGPSMode = NO;
     currentAppEnabled = 0;
     coordinate = CLLocationCoordinate2DMake(0,0);
     locationDict = @{};
@@ -261,6 +393,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     }
 
     [preferences registerPreferenceChangeBlock:^() {
+        noGPSMode = globalNoGPS;
         currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] intValue];
 
         enabled = NO;

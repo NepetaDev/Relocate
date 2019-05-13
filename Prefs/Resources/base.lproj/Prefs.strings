@@ -4,6 +4,8 @@
   "GLOBAL" = "Global override";
   "APP" = "Application override";
   "LOCATION" = "Location";
+  "NO_GPS" = "No GPS mode";
+  "NO_GPS_INFO" = "Disables GPS, slightly increases battery life, but fake location data is less believable.";
 
   "ARE_YOU_SURE_TO_RESET_PREFS" = "Are you sure you want to reset all your preferences? This cannot be undone.";
   "OK" = "OK";
