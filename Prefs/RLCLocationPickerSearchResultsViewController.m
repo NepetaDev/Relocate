@@ -71,7 +71,12 @@
 
     MKCoordinateSpan span = MKCoordinateSpanMake(0.1, 0.1);
     MKCoordinateRegion region = {coord, span};
-    [((RLCLocationPickerViewController *)self.parentController).lpView.mapView setRegion:region animated:YES];
+
+    RLCLocationPickerView *view = ((RLCLocationPickerViewController *)self.parentController).lpView;
+    if (!view.pin) [view createPinAt:coord];
+    else [view.pin setCoordinate:coord];
+    [view.pin setTitle:@"Selected location"];
+    [view.mapView setRegion:region animated:YES];
 
     [self dismissViewControllerAnimated:YES completion:nil];
 }
