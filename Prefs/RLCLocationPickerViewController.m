@@ -88,6 +88,11 @@
         };
         [self setPreferenceValue:self.dictionary specifier:[self specifier]];
     }
+
+    if ([[self specifier] propertyForKey:@"key"] && [[[self specifier] propertyForKey:@"key"] isEqualToString:@"GlobalLocation"]) {
+        HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.relocate"];
+        [prefs removeObjectForKey:@"SelectedFavorite"];
+    }
     
     [self.navigationController popViewControllerAnimated:TRUE];
 }
