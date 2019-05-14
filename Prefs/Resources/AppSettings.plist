@@ -9,6 +9,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>APP</string>
+			<key>footerText</key>
+			<string>INFO</string>
 		</dict>
 		<dict>
 			<key>cell</key>

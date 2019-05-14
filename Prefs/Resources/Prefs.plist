@@ -11,6 +11,8 @@
 			<string>HBImageTableCell</string>
 			<key>icon</key>
 			<string>relocate.png</string>
+			<key>footerText</key>
+			<string>ENABLED_TOGGLE_INFO</string>
 		</dict>
 
 		<dict>
@@ -21,12 +23,30 @@
 			<key>user</key>
 			<string>NepetaDev</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>me.nepeta.relocate</string>
+			<key>label</key>
+			<string>ENABLED</string>
+			<key>key</key>
+			<string>Enabled</string>
+			<key>alternateColors</key>
+			<true/>
+			<key>PostNotification</key>
+			<string>me.nepeta.relocate/ReloadPrefs</string>
+		</dict>
 
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>GLOBAL</string>
+			<key>footerText</key>
+			<string>GLOBAL_INFO</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -64,31 +84,10 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>NO_GPS_INFO</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>me.nepeta.relocate</string>
-			<key>label</key>
-			<string>NO_GPS</string>
-			<key>key</key>
-			<string>GlobalNoGPS</string>
-			<key>alternateColors</key>
-			<true/>
-			<key>PostNotification</key>
-			<string>me.nepeta.relocate/ReloadPrefs</string>
-		</dict>
-
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>APP</string>
+			<key>footerText</key>
+			<string>APP_INFO</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -117,6 +116,31 @@
 			<string>me.nepeta.relocate</string>
 			<key>label</key>
 			<string>APPLICATIONS</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>NO_GPS</string>
+			<key>footerText</key>
+			<string>NO_GPS_INFO</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>me.nepeta.relocate</string>
+			<key>label</key>
+			<string>NO_GPS</string>
+			<key>key</key>
+			<string>GlobalNoGPS</string>
+			<key>alternateColors</key>
+			<true/>
+			<key>PostNotification</key>
+			<string>me.nepeta.relocate/ReloadPrefs</string>
 		</dict>
 
 		<!-- Credits -->

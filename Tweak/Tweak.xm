@@ -8,6 +8,7 @@
 
 HBPreferences *preferences;
 
+bool rlcEnabled;
 bool globalEnabled;
 bool globalNoGPS;
 bool appEnabled;
@@ -377,6 +378,7 @@ CLLocation *getFabricatedLocation() {
     [preferences registerBool:&globalEnabled default:NO forKey:@"GlobalEnabled"];
     [preferences registerBool:&globalNoGPS default:NO forKey:@"GlobalNoGPS"];
     [preferences registerBool:&appEnabled default:YES forKey:@"AppEnabled"];
+    [preferences registerBool:&rlcEnabled default:YES forKey:@"Enabled"];
 
     enabled = NO;
     joystick = NO;
@@ -393,10 +395,12 @@ CLLocation *getFabricatedLocation() {
     }
 
     [preferences registerPreferenceChangeBlock:^() {
+        enabled = NO;
+        if (!rlcEnabled) return;
+        
         noGPSMode = globalNoGPS;
         currentAppEnabled = [[preferences objectForKey:[NSString stringWithFormat:@"App_%@_Enabled", bundleIdentifier]] intValue];
 
-        enabled = NO;
         if (globalEnabled) {
             enabled = YES;
             locationDict = [preferences objectForKey:@"GlobalLocation"];

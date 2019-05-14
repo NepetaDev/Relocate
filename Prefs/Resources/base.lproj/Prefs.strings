@@ -7,6 +7,10 @@
   "LOCATION" = "Location";
   "NO_GPS" = "No GPS mode";
   "NO_GPS_INFO" = "Disables GPS, slightly increases battery life, but fake location data is less believable.";
+  "ENABLED_TOGGLE_INFO" = "The switch above enables all functionality of this tweak. If disabled, your location won't be changed anywhere.";
+
+  "GLOBAL_INFO" = "Sets your location globally, i.e. in all apps, unless changed elsewhere.";
+  "APP_INFO" = "Sets your location on a per-app basis, independently - does not require global override to be on.";
 
   "ARE_YOU_SURE_TO_RESET_PREFS" = "Are you sure you want to reset all your preferences? This cannot be undone.";
   "OK" = "OK";
