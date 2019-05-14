@@ -155,6 +155,16 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>RLCFavorites</string>
+			<key>label</key>
+			<string>FAVORITES_MANAGER</string>
+			<key>PostNotification</key>
+			<string>me.nepeta.relocate/ReloadPrefs</string>
+		</dict>
+		<dict>
 			<key>action</key>
 			<string>resetPrefs:</string>
 			<key>cell</key>
