@@ -8,6 +8,35 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>VIEW</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>STANDARD</string>
+				<string>SATELLITE</string>
+				<string>HYBRID</string>
+			</array>
+			<key>alignment</key>
+			<string>3</string>
+			<key>key</key>
+			<string>MapType</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>ALTITUDE</string>
 		</dict>
 		<dict>

@@ -58,7 +58,7 @@
     }
 
     self.advancedSettingsViewHeightConstraintHidden = [self.advancedSettingsView.heightAnchor constraintEqualToConstant:GRABBER_HEIGHT + bottomInset];
-    self.advancedSettingsViewHeightConstraintVisible = [self.advancedSettingsView.heightAnchor constraintEqualToAnchor:self.heightAnchor constant:-150];
+    self.advancedSettingsViewHeightConstraintVisible = [self.advancedSettingsView.topAnchor constraintEqualToAnchor:self.centerYAnchor constant:-100];
     [NSLayoutConstraint activateConstraints:@[
         [self.advancedSettingsView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
         [self.advancedSettingsView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor],

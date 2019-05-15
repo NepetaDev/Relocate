@@ -1,5 +1,11 @@
 {
   "ENABLED" = "Enabled";
+
+  "VIEW" = "Map view";
+  "STANDARD" = "Standard";
+  "SATELLITE" = "Satellite";
+  "HYBRID" = "Hybrid";
+
   "ALTITUDE" = "Altitude (m)";
   "ALTITUDE_OVERRIDE" = "Override altitude";
 }

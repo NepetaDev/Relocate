@@ -37,6 +37,22 @@
     if (![specifier propertyForKey:@"key"]) return [specifier propertyForKey:@"default"];
 
     RLCLocationPickerViewController *parent = (RLCLocationPickerViewController *)self.parentViewController;
+
+    if ([[specifier propertyForKey:@"key"] isEqualToString:@"MapType"]) {
+        int value = 0;
+        switch (parent.lpView.mapView.mapType) {
+            case MKMapTypeSatellite:
+                value = 1;
+                break;
+            case MKMapTypeHybrid:
+                value = 2;
+                break;
+            default:
+                value = 0;
+        }
+        return @(value);
+    }
+
     if (parent && parent.dictionary && parent.dictionary[[specifier propertyForKey:@"key"]]) {
         return parent.dictionary[[specifier propertyForKey:@"key"]];
     }
@@ -48,6 +64,21 @@
     if (![specifier propertyForKey:@"key"]) return;
 
     RLCLocationPickerViewController *parent = (RLCLocationPickerViewController *)self.parentViewController;
+
+    if ([[specifier propertyForKey:@"key"] isEqualToString:@"MapType"]) {
+        switch ([value intValue]) {
+            case 1:
+                parent.lpView.mapView.mapType = MKMapTypeSatellite;
+                break;
+            case 2:
+                parent.lpView.mapView.mapType = MKMapTypeHybrid;
+                break;
+            default:
+                parent.lpView.mapView.mapType = MKMapTypeStandard;
+        }
+        return;
+    }
+
     if (parent && parent.dictionary) {
         parent.dictionary[[specifier propertyForKey:@"key"]] = value;
     }
