@@ -14,12 +14,28 @@
         [_tableView setEditing:NO];
         [_tableView setAllowsSelection:YES];
         [_tableView setAllowsMultipleSelection:NO];
+
+        self.editButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" 
+                            style:UIBarButtonItemStylePlain
+                            target:self 
+                            action:@selector(toggleEditing:)];
+        self.editButton.tintColor = [UIColor blackColor];
+        self.navigationItem.rightBarButtonItem = self.editButton;
         
         if ([self respondsToSelector:@selector(setView:)])
             [self performSelectorOnMainThread:@selector(setView:) withObject:_tableView waitUntilDone:YES];
     }
 
     return self;
+}
+
+- (void)toggleEditing:(id)sender {
+    if ([_tableView isEditing]) {
+        [self.editButton setTitle:@"Edit"];
+    } else {
+        [self.editButton setTitle:@"Confirm"];
+    }
+    [_tableView setEditing:![_tableView isEditing]];
 }
 
 - (void)loadFromSpecifier:(PSSpecifier *)specifier {
@@ -84,6 +100,22 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+    HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:BUNDLE_ID];
+    NSMutableArray *favorites = nil;
+
+    if ([prefs objectForKey:@"Favorites"]) {
+        favorites = [[prefs objectForKey:@"Favorites"] mutableCopy];
+        NSMutableDictionary *dictionary = favorites[sourceIndexPath.row];
+        [favorites removeObjectAtIndex:sourceIndexPath.row];
+        [favorites insertObject:dictionary atIndex:destinationIndexPath.row];
+    } else {
+        favorites = [@[] mutableCopy];
+    }
+
+    [prefs setObject:favorites forKey:@"Favorites"];
 }
 
 -(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {

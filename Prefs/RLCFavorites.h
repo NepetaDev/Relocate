@@ -8,6 +8,8 @@
     UITableView *_tableView;
 }
 
-    @property (nonatomic, retain) NSMutableArray *favorites;
-    - (void)refreshList;
+@property (nonatomic, retain) NSMutableArray *favorites;
+@property (nonatomic, retain) UIBarButtonItem *editButton;
+- (void)refreshList;
+
 @end
