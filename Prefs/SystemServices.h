@@ -5,7 +5,7 @@
 #import <Cephei/HBPreferences.h>
 #import "NSTask.h"
 
-@interface RLCPrefsListController : HBRootListController
-    - (void)resetPrefs:(id)sender;
-    - (void)respring:(id)sender;
+@interface RLCSystemServicesListController : HBRootListController
+    - (void)restartFMF:(id)sender;
+    - (void)restartFMI:(id)sender;
 @end

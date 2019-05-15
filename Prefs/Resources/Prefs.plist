@@ -145,12 +145,11 @@
 			<string>me.nepeta.relocate/ReloadPrefs</string>
 		</dict>
 
-		<!-- Credits -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>Relocate by Nepeta</string>
+			<key>label</key>
+			<string>ADVANCED</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
@@ -163,6 +162,26 @@
 			<string>FAVORITES_MANAGER</string>
 			<key>PostNotification</key>
 			<string>me.nepeta.relocate/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>RLCSystemServicesListController</string>
+			<key>label</key>
+			<string>SYSTEM_SERVICES</string>
+			<key>PostNotification</key>
+			<string>me.nepeta.relocate/ReloadPrefs</string>
+		</dict>
+
+		<!-- Credits -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Relocate by Nepeta</string>
+			<key>isStaticText</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>action</key>

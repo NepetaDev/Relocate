@@ -1,0 +1,12 @@
+{
+  "FMF" = "Find my friends";
+  "FMI" = "Find my iPhone";
+  "LOCATION" = "Location";
+  "DEFAULT" = "Default";
+  "OVERRIDE" = "Custom override";
+  "USE_REAL" = "Use real location";
+  "RESTART" = "Restart";
+  "SYSTEM_SERVICES" = "System services";
+
+  "INFO" = "Default - uses either global override or real location depending on global override being on or off.\nCustom override - overrides your location in this app with the one you specify in the \"Location\" section.\nUse real location - uses your real location regardless of other settings, effectively blacklisting the app from being effected by Relocate.";
+}

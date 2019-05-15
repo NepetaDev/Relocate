@@ -12,7 +12,10 @@
   "GLOBAL_INFO" = "Sets your location globally, i.e. in all apps, unless changed elsewhere.";
   "APP_INFO" = "Sets your location on a per-app basis, independently - does not require global override to be on.";
 
+  "ADVANCED" = "Advanced";
   "FAVORITES_MANAGER" = "Favorites manager";
+  "SYSTEM_SERVICES" = "System services";
+
   "ARE_YOU_SURE_TO_RESET_PREFS" = "Are you sure you want to reset all your preferences? This cannot be undone.";
   "OK" = "OK";
   "CANCEL" = "Cancel";
