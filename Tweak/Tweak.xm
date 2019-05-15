@@ -21,55 +21,6 @@ CLLocationCoordinate2D coordinate;
 NSDictionary *locationDict;
 RLCAnalogStickWindow *analogStickWindow;
 
-CLLocation *getOverridenLocation(CLLocation *location) {
-    double altitude = location.altitude;
-    if (locationDict[@"AltitudeOverride"] && [locationDict[@"AltitudeOverride"] boolValue] && locationDict[@"Altitude"]) {
-        altitude = [locationDict[@"Altitude"] doubleValue];
-    }
-
-    return [[CLLocation alloc] initWithCoordinate:coordinate
-        altitude:altitude
-        horizontalAccuracy:location.horizontalAccuracy
-        verticalAccuracy:location.verticalAccuracy
-        course:location.course
-        speed:0
-        timestamp:location.timestamp
-    ];
-}
-
-CLLocation *getFabricatedLocation() {
-    double altitude = 420;
-    if (locationDict[@"AltitudeOverride"] && [locationDict[@"AltitudeOverride"] boolValue] && locationDict[@"Altitude"]) {
-        altitude = [locationDict[@"Altitude"] doubleValue];
-    }
-
-    return [[CLLocation alloc]
-                initWithCoordinate:coordinate
-                altitude:altitude
-                horizontalAccuracy:10
-                verticalAccuracy:10
-                course:1
-                speed:0
-                timestamp:[NSDate date]
-            ];
-}
-
-CLHeading *getFabricatedHeading() {
-    CLHeadingInternalStruct internal;
-    internal.x1 = 1;
-    internal.x2 = 1;
-    internal.x3 = 1;
-    internal.x4 = 1;
-    internal.x5 = 1;
-    internal.x6 = 1;
-    internal.x7 = 1;
-    internal.x8 = 1;
-    internal.x9 = 1;
-    internal.x10 = 1;
-    internal.x11 = 1;
-    return [[CLHeading alloc] initWithClientHeading:internal];
-}
-
 @interface NSNull (Relocate)
 -(int)intValue;
 -(BOOL)boolValue;
@@ -98,6 +49,55 @@ CLHeading *getFabricatedHeading() {
     return sharedInstance;
 }
 
++(CLLocation *)getOverridenLocation:(CLLocation *)location {
+    double altitude = location.altitude;
+    if (locationDict[@"AltitudeOverride"] && [locationDict[@"AltitudeOverride"] boolValue] && locationDict[@"Altitude"]) {
+        altitude = [locationDict[@"Altitude"] doubleValue];
+    }
+
+    return [[CLLocation alloc] initWithCoordinate:coordinate
+        altitude:altitude
+        horizontalAccuracy:location.horizontalAccuracy
+        verticalAccuracy:location.verticalAccuracy
+        course:location.course
+        speed:0
+        timestamp:location.timestamp
+    ];
+}
+
++(CLLocation *)getFabricatedLocation {
+    double altitude = 420;
+    if (locationDict[@"AltitudeOverride"] && [locationDict[@"AltitudeOverride"] boolValue] && locationDict[@"Altitude"]) {
+        altitude = [locationDict[@"Altitude"] doubleValue];
+    }
+
+    return [[CLLocation alloc]
+        initWithCoordinate:coordinate
+        altitude:altitude
+        horizontalAccuracy:10
+        verticalAccuracy:10
+        course:1
+        speed:0
+        timestamp:[NSDate date]
+    ];
+}
+
++(CLHeading *)getFabricatedHeading {
+    CLHeadingInternalStruct internal;
+    internal.x1 = 1;
+    internal.x2 = 1;
+    internal.x3 = 1;
+    internal.x4 = 1;
+    internal.x5 = 1;
+    internal.x6 = 1;
+    internal.x7 = 1;
+    internal.x8 = 1;
+    internal.x9 = 1;
+    internal.x10 = 1;
+    internal.x11 = 1;
+    return [[CLHeading alloc] initWithClientHeading:internal];
+}
+
 -(id)init {
     return [RLCManager sharedInstance];
 }
@@ -115,12 +115,16 @@ CLHeading *getFabricatedHeading() {
     if (!manager) return;
     if ([[manager delegate] respondsToSelector:@selector(locationManager:didUpdateLocations:)]) {
         [[manager delegate] locationManager:manager didUpdateLocations:@[
-            getFabricatedLocation()
+            [RLCManager getFabricatedLocation]
         ]];
     }
 
+    if ([[manager delegate] respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)]) {
+        [[manager delegate] locationManager:manager didUpdateToLocation:[RLCManager getFabricatedLocation] fromLocation:[RLCManager getFabricatedLocation]];
+    }
+
     if ([[manager delegate] respondsToSelector:@selector(locationManager:didUpdateHeading:)]) {
-        [[manager delegate] locationManager:manager didUpdateHeading:getFabricatedHeading()];
+        [[manager delegate] locationManager:manager didUpdateHeading:[RLCManager getFabricatedHeading]];
     }
 }
 
@@ -130,7 +134,7 @@ CLHeading *getFabricatedHeading() {
     [_managers addObject:manager];
 
     if (!_timer) {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(update) userInfo:nil repeats:YES];
+        _timer = [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(update) userInfo:nil repeats:YES];
     }
 }
 
@@ -144,16 +148,25 @@ CLHeading *getFabricatedHeading() {
 @implementation RLCLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
-    if (![self.delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)]) return;
     if (enabled && noGPSMode) return;
-    if (enabled) {
-        NSMutableArray *betterLocations = [NSMutableArray new];
-        for (CLLocation *location in locations) {
-            [betterLocations addObject:getOverridenLocation(location)];
+    if ([self.delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)]) {
+        if (enabled) {
+            NSMutableArray *betterLocations = [NSMutableArray new];
+            for (CLLocation *location in locations) {
+                [betterLocations addObject:[RLCManager getOverridenLocation:location]];
+            }
+            [self.delegate locationManager:manager didUpdateLocations:[[NSArray alloc] initWithArray:betterLocations]];
+        } else {
+            [self.delegate locationManager:manager didUpdateLocations:locations];
         }
-        [self.delegate locationManager:manager didUpdateLocations:betterLocations];
-    } else {
-        [self.delegate locationManager:manager didUpdateLocations:locations];
+    }
+
+    if ([self.delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)] && [locations count] > 0) {
+        if (enabled) {
+            [self.delegate locationManager:manager didUpdateToLocation:[RLCManager getOverridenLocation:locations[[locations count] - 1]] fromLocation:[RLCManager getOverridenLocation:locations[0]]];
+        } else {
+            [self.delegate locationManager:manager didUpdateToLocation:locations[[locations count] - 1] fromLocation:locations[0]];
+        }
     }
 }
 
@@ -166,10 +179,10 @@ CLHeading *getFabricatedHeading() {
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    if (![self.delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:)]) return;
+    if (![self.delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)]) return;
     if (enabled && noGPSMode) return;
     if (enabled) {
-        [self.delegate locationManager:manager didUpdateToLocation:getOverridenLocation(newLocation) fromLocation:getOverridenLocation(oldLocation)];
+        [self.delegate locationManager:manager didUpdateToLocation:[RLCManager getOverridenLocation:newLocation] fromLocation:[RLCManager getOverridenLocation:oldLocation]];
     } else {
         [self.delegate locationManager:manager didUpdateToLocation:newLocation fromLocation:oldLocation];
     }
@@ -277,6 +290,7 @@ CLHeading *getFabricatedHeading() {
     if (analogStickWindow.inputY != 0 && analogStickWindow.inputX != 0) {
         coordinate.latitude += analogStickWindow.inputY * 0.00001;
         coordinate.longitude += analogStickWindow.inputX * 0.00001;
+        if (enabled && noGPSMode) [[RLCManager sharedInstance] update];
     }
 }
 
@@ -302,14 +316,13 @@ CLHeading *getFabricatedHeading() {
 
 -(CLLocation *)location {
     if (!enabled) return %orig;
-    if (noGPSMode) return getFabricatedLocation();
+    if (noGPSMode) return [RLCManager getFabricatedLocation];
 
-    CLLocation *location = %orig;
-    return getOverridenLocation(location);
+    return [RLCManager getOverridenLocation:%orig];
 }
 
 -(CLHeading *)heading {
-    if (enabled && noGPSMode) return getFabricatedHeading();
+    if (enabled && noGPSMode) return [RLCManager getFabricatedHeading];
     return %orig;
 }
 

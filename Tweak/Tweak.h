@@ -20,6 +20,10 @@
 -(void)addManager:(CLLocationManager*)manager;
 -(void)removeManager:(CLLocationManager*)manager;
 
++(CLLocation *)getOverridenLocation:(CLLocation *)location;
++(CLLocation *)getFabricatedLocation;
++(CLHeading *)getFabricatedHeading;
+
 @end
 
 typedef struct CLHeadingInternalStruct {
