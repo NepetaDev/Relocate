@@ -202,49 +202,49 @@ CLHeading *getFabricatedHeading() {
 
 - (void)locationManager:(CLLocationManager *)manager didVisit:(CLVisit *)visit {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:didVisit:)]) {
-        [self locationManager:manager didVisit:visit];
+        [self.delegate locationManager:manager didVisit:visit];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:didRangeBeacons:inRegion:)]) {
-        [self locationManager:manager didRangeBeacons:beacons inRegion:region];
+        [self.delegate locationManager:manager didRangeBeacons:beacons inRegion:region];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didStartMonitoringForRegion:(CLRegion *)region {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:didStartMonitoringForRegion:)]) {
-        [self locationManager:manager didStartMonitoringForRegion:region];
+        [self.delegate locationManager:manager didStartMonitoringForRegion:region];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:didDetermineState:forRegion:)]) {
-        [self locationManager:manager didDetermineState:state forRegion:region];
+        [self.delegate locationManager:manager didDetermineState:state forRegion:region];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:didEnterRegion:)]) {
-        [self locationManager:manager didEnterRegion:region];
+        [self.delegate locationManager:manager didEnterRegion:region];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:didExitRegion:)]) {
-        [self locationManager:manager didExitRegion:region];
+        [self.delegate locationManager:manager didExitRegion:region];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:monitoringDidFailForRegion:withError:)]) {
-        [self locationManager:manager monitoringDidFailForRegion:region withError:error];
+        [self.delegate locationManager:manager monitoringDidFailForRegion:region withError:error];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region withError:(NSError *)error {
     if (!enabled && [self.delegate respondsToSelector:@selector(locationManager:rangingBeaconsDidFailForRegion:withError:)]) {
-        [self locationManager:manager rangingBeaconsDidFailForRegion:region withError:error];
+        [self.delegate locationManager:manager rangingBeaconsDidFailForRegion:region withError:error];
     }
 }
 
