@@ -26,6 +26,7 @@ CLLocation *getOverridenLocation(CLLocation *location) {
     if (locationDict[@"AltitudeOverride"] && [locationDict[@"AltitudeOverride"] boolValue] && locationDict[@"Altitude"]) {
         altitude = [locationDict[@"Altitude"] doubleValue];
     }
+
     return [[CLLocation alloc] initWithCoordinate:coordinate
         altitude:altitude
         horizontalAccuracy:location.horizontalAccuracy
@@ -111,6 +112,7 @@ CLHeading *getFabricatedHeading() {
 }
 
 -(void)updateManager:(CLLocationManager*)manager {
+    if (!manager) return;
     if ([[manager delegate] respondsToSelector:@selector(locationManager:didUpdateLocations:)]) {
         [[manager delegate] locationManager:manager didUpdateLocations:@[
             getFabricatedLocation()
