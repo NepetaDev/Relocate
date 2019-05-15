@@ -14,6 +14,7 @@ bool appEnabled;
 int currentAppEnabled;
 bool dpkgInvalid;
 bool noGPSMode;
+bool managerInitialized;
 
 bool enabled;
 bool joystick;
@@ -45,6 +46,7 @@ RLCAnalogStickWindow *analogStickWindow;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [RLCManager alloc];
+        managerInitialized = YES;
     });
     return sharedInstance;
 }
@@ -131,7 +133,7 @@ RLCAnalogStickWindow *analogStickWindow;
 -(void)addManager:(CLLocationManager*)manager {
     if (!manager) return;
     if (!_managers) _managers = [NSMutableArray new];
-    [_managers addObject:manager];
+    if (![_managers containsObject:manager]) [_managers addObject:manager];
 
     if (!_timer) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:8 target:self selector:@selector(update) userInfo:nil repeats:YES];
@@ -476,6 +478,7 @@ RLCAnalogStickWindow *analogStickWindow;
     currentAppEnabled = 0;
     coordinate = CLLocationCoordinate2DMake(0,0);
     locationDict = @{};
+    managerInitialized = NO;
 
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
     if ([processName isEqualToString:@"findmydeviced"]) {
@@ -516,6 +519,8 @@ RLCAnalogStickWindow *analogStickWindow;
         if (coordinateDict && coordinateDict[@"Latitude"] && coordinateDict[@"Longitude"]) {
             coordinate = CLLocationCoordinate2DMake([coordinateDict[@"Latitude"] doubleValue], [coordinateDict[@"Longitude"] doubleValue]);
         }
+
+        if (managerInitialized && noGPSMode) [[RLCManager sharedInstance] update];
     }];
 
     %init(Relocate);
