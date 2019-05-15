@@ -17,6 +17,7 @@
         blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
         blurEffectView.layer.cornerRadius = 10;
+        blurEffectView.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMinXMinYCorner;
         blurEffectView.layer.masksToBounds = YES;
 
         [self addSubview:blurEffectView];
