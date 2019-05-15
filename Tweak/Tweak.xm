@@ -1,5 +1,4 @@
 #import <Cephei/HBPreferences.h>
-#import <CoreLocation/CLLocation.h>
 #import "Tweak.h"
 #import "RLCLocationManagerDelegate.h"
 #import "RLCAnalogStickWindow.h"
@@ -54,6 +53,22 @@ CLLocation *getFabricatedLocation() {
             ];
 }
 
+CLHeading *getFabricatedHeading() {
+    CLHeadingInternalStruct internal;
+    internal.x1 = 1;
+    internal.x2 = 1;
+    internal.x3 = 1;
+    internal.x4 = 1;
+    internal.x5 = 1;
+    internal.x6 = 1;
+    internal.x7 = 1;
+    internal.x8 = 1;
+    internal.x9 = 1;
+    internal.x10 = 1;
+    internal.x11 = 1;
+    return [[CLHeading alloc] initWithClientHeading:internal];
+}
+
 @interface NSNull (Relocate)
 -(int)intValue;
 -(BOOL)boolValue;
@@ -100,6 +115,8 @@ CLLocation *getFabricatedLocation() {
         [[manager delegate] locationManager:manager didUpdateLocations:@[
             getFabricatedLocation()
         ]];
+
+        [[manager delegate] locationManager:manager didUpdateHeading:getFabricatedHeading()];
     }
 }
 
@@ -124,6 +141,7 @@ CLLocation *getFabricatedLocation() {
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
     if (![self.delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)]) return;
+    if (enabled && noGPSMode) return;
     if (enabled) {
         NSMutableArray *betterLocations = [NSMutableArray new];
         for (CLLocation *location in locations) {
@@ -145,6 +163,7 @@ CLLocation *getFabricatedLocation() {
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     if (![self.delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:)]) return;
+    if (enabled && noGPSMode) return;
     if (enabled) {
         [self.delegate locationManager:manager didUpdateToLocation:getOverridenLocation(newLocation) fromLocation:getOverridenLocation(oldLocation)];
     } else {
@@ -161,6 +180,7 @@ CLLocation *getFabricatedLocation() {
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+    if (enabled && noGPSMode) return;
     if ([self.delegate respondsToSelector:@selector(locationManager:didUpdateHeading:)]) [self.delegate locationManager:manager didUpdateHeading:newHeading];
 }
 
@@ -284,6 +304,11 @@ CLLocation *getFabricatedLocation() {
     return getOverridenLocation(location);
 }
 
+-(CLHeading *)heading {
+    if (enabled && noGPSMode) return getFabricatedHeading();
+    return %orig;
+}
+
 -(void)requestWhenInUseAuthorization {
     if (enabled && noGPSMode) return;
     %orig;
@@ -333,12 +358,12 @@ CLLocation *getFabricatedLocation() {
 }
 
 +(BOOL)headingAvailable {
-    if (enabled && noGPSMode) return NO;
+    if (enabled && noGPSMode) return YES;
     return %orig;
 }
 
 -(void)startUpdatingHeading {
-    if (enabled && noGPSMode) return;
+    [[RLCManager sharedInstance] addManager:self];
     %orig;
 }
 
