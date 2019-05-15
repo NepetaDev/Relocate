@@ -105,7 +105,7 @@ CLHeading *getFabricatedHeading() {
     if (!enabled || !noGPSMode) return;
     if (!_managers || [_managers count] == 0) return;
 
-    for (id manager in _managers) {
+    for (id manager in [[_managers copy] reverseObjectEnumerator]) {
         [self updateManager:manager];
     }
 }
