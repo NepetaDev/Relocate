@@ -115,7 +115,9 @@ CLHeading *getFabricatedHeading() {
         [[manager delegate] locationManager:manager didUpdateLocations:@[
             getFabricatedLocation()
         ]];
+    }
 
+    if ([[manager delegate] respondsToSelector:@selector(locationManager:didUpdateHeading:)]) {
         [[manager delegate] locationManager:manager didUpdateHeading:getFabricatedHeading()];
     }
 }
