@@ -43,6 +43,19 @@
         if (obj && [obj isKindOfClass:[NSArray class]]) {
             self.favorites = [((NSArray *)obj) mutableCopy];
         }
+
+        if ([prefs objectForKey:@"MapType"]) {
+            switch ([[prefs objectForKey:@"MapType"] intValue]) {
+                case 1:
+                    self.lpView.mapView.mapType = MKMapTypeSatellite;
+                    break;
+                case 2:
+                    self.lpView.mapView.mapType = MKMapTypeHybrid;
+                    break;
+                default:
+                    self.lpView.mapView.mapType = MKMapTypeStandard;
+            }
+        }
     }
 
     return self;

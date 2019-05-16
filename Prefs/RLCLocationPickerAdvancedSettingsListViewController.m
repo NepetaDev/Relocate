@@ -34,24 +34,10 @@
 }
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier {
+    if ([specifier propertyForKey:@"defaults"]) return [super readPreferenceValue:specifier];
     if (![specifier propertyForKey:@"key"]) return [specifier propertyForKey:@"default"];
 
     RLCLocationPickerViewController *parent = (RLCLocationPickerViewController *)self.parentViewController;
-
-    if ([[specifier propertyForKey:@"key"] isEqualToString:@"MapType"]) {
-        int value = 0;
-        switch (parent.lpView.mapView.mapType) {
-            case MKMapTypeSatellite:
-                value = 1;
-                break;
-            case MKMapTypeHybrid:
-                value = 2;
-                break;
-            default:
-                value = 0;
-        }
-        return @(value);
-    }
 
     if (parent && parent.dictionary && parent.dictionary[[specifier propertyForKey:@"key"]]) {
         return parent.dictionary[[specifier propertyForKey:@"key"]];
@@ -62,6 +48,7 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
     if (![specifier propertyForKey:@"key"]) return;
+    if ([specifier propertyForKey:@"defaults"]) [super setPreferenceValue:value specifier:specifier];
 
     RLCLocationPickerViewController *parent = (RLCLocationPickerViewController *)self.parentViewController;
 
