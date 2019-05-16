@@ -86,17 +86,17 @@ RLCAnalogStickWindow *analogStickWindow;
 
 +(CLHeading *)getFabricatedHeading {
     CLHeadingInternalStruct internal;
-    internal.x1 = 1;
-    internal.x2 = 1;
-    internal.x3 = 1;
-    internal.x4 = 1;
-    internal.x5 = 1;
-    internal.x6 = 1;
-    internal.x7 = 1;
-    internal.x8 = 1;
-    internal.x9 = 1;
-    internal.x10 = 1;
-    internal.x11 = 1;
+    internal.x = 1;
+    internal.y = 1;
+    internal.z = 1;
+    internal.magneticHeading = 1;
+    internal.trueHeading = 1;
+    internal.accuracy = 20;
+    internal.timestamp = [[NSDate date] timeIntervalSinceReferenceDate];
+    internal.temperature = 0;
+    internal.magnitude = 0;
+    internal.inclination = 0;
+    internal.calibration = 5;
     return [[CLHeading alloc] initWithClientHeading:internal];
 }
 
