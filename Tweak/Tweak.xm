@@ -353,6 +353,7 @@ RLCAnalogStickWindow *analogStickWindow;
 
 -(void)startUpdatingLocation {
     [[RLCManager sharedInstance] addManager:self];
+    [[RLCManager sharedInstance] update];
     %orig;
 }
 
@@ -383,6 +384,7 @@ RLCAnalogStickWindow *analogStickWindow;
 
 -(void)startUpdatingHeading {
     [[RLCManager sharedInstance] addManager:self];
+    [[RLCManager sharedInstance] update];
     %orig;
 }
 
