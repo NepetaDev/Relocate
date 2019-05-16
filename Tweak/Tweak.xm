@@ -292,7 +292,7 @@ RLCAnalogStickWindow *analogStickWindow;
     if (analogStickWindow.inputY != 0 && analogStickWindow.inputX != 0) {
         coordinate.latitude += analogStickWindow.inputY * 0.00001;
         coordinate.longitude += analogStickWindow.inputX * 0.00001;
-        if (enabled && noGPSMode) [[RLCManager sharedInstance] update];
+        [[RLCManager sharedInstance] update];
     }
 }
 
@@ -522,7 +522,7 @@ RLCAnalogStickWindow *analogStickWindow;
             coordinate = CLLocationCoordinate2DMake([coordinateDict[@"Latitude"] doubleValue], [coordinateDict[@"Longitude"] doubleValue]);
         }
 
-        if (managerInitialized && noGPSMode) [[RLCManager sharedInstance] update];
+        if (managerInitialized) [[RLCManager sharedInstance] update];
     }];
 
     %init(Relocate);
