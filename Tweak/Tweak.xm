@@ -263,6 +263,10 @@ RLCAnalogStickWindow *analogStickWindow;
     }
 }
 
+- (void)dealloc {
+    [[RLCManager sharedInstance] removeManager:self.manager];
+}
+
 @end
 
 %group Relocate
@@ -307,6 +311,7 @@ RLCAnalogStickWindow *analogStickWindow;
         self.rlcDelegate = [[RLCLocationManagerDelegate alloc] init];
     }
 
+    self.rlcDelegate.manager = self;
     self.rlcDelegate.delegate = delegate;
 
     %orig(self.rlcDelegate);
@@ -382,12 +387,6 @@ RLCAnalogStickWindow *analogStickWindow;
     return %orig;
 }
 
--(void)startUpdatingHeading {
-    [[RLCManager sharedInstance] addManager:self];
-    [[RLCManager sharedInstance] update];
-    %orig;
-}
-
 %end
 
 %end
@@ -435,7 +434,7 @@ RLCAnalogStickWindow *analogStickWindow;
                         || [processName isEqualToString:@"CoreAuthUI"]
                         || [processName isEqualToString:@"InCallService"]
                         || [processName isEqualToString:@"MessagesNotificationViewService"]
-                        || [executablePath rangeOfString:@".appex/"].location != NSNotFound
+                     // || [executablePath rangeOfString:@".appex/"].location != NSNotFound -- commented out to fix weather widget
                         || ![[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH];
             if (!isFileProvider && isApplication && !skip && [[NSFileManager defaultManager] fileExistsAtPath:PLIST_PATH]) {
                 shouldLoad = !dpkgInvalid;
@@ -454,9 +453,6 @@ RLCAnalogStickWindow *analogStickWindow;
             @"findmydeviced",
             @"fmfd",
             @"fmflocatord",
-            @"locationd",
-            @"siriknowledged",
-            @"SpringBoard",
         ];
 
         for (NSString *process in whitelist) {

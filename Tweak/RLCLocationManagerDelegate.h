@@ -3,6 +3,7 @@
 @interface RLCLocationManagerDelegate : NSObject <CLLocationManagerDelegate>
 
 @property (nonatomic, retain) id<CLLocationManagerDelegate> delegate;
+@property (nonatomic, retain) id manager;
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations;
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error;
